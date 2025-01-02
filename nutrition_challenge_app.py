@@ -2,68 +2,81 @@
 
 import streamlit as st
 
-# Sample food database with points
-food_data = {
-    "Apple": 5, "Broccoli": 5, "Chicken Breast": 4, "Quinoa": 5,
-    "Almonds": 5, "Cheeseburger": 1, "Soda": 0, "French Fries": 1,
-    "Salmon": 5, "Spinach": 5, "Pizza": 1, "Ice Cream": 0,
-    "Tofu": 5, "Lentils": 5, "Oats": 5, "Chocolate Bar": 1,
-    "Granola": 3, "Eggs": 4, "Avocado": 5, "Sweet Potato": 5
-}
+# Inject CSS for Custom Styling
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f4f9fc;
+    }
+    h1, h2, h3 {
+        text-align: center;
+        color: #2C3E50;
+    }
+    .stButton>button {
+        background-color: #3498DB;
+        color: white;
+        padding: 10px;
+        font-size: 1em;
+        border-radius: 8px;
+        width: 100%;
+    }
+    .stButton>button:hover {
+        background-color: #2980B9;
+    }
+    .stMetric {
+        text-align: center;
+        font-size: 1.2em;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# Fake user data for leaderboard
-users = {
-    "Alice": 75,
-    "Bob": 50,
-    "Charlie": 60,
-    "Diana": 90,
-    "Eve": 80
-}
+# App Title
+st.title("🌟 Nutrition Challenge App 🌟")
 
-# Achievement thresholds
-achievement_milestones = {
-    "Novice Eater": 50,
-    "Healthy Hero": 100,
-    "Nutritional Mastermind": 150
-}
+# Food Logging Section
+st.markdown("## 🥗 Log Your Food")
+with st.container():
+    food_input = st.text_input("Enter the name of your food:", placeholder="e.g., Apple")
+    score = st.selectbox(
+        "Select the health score (1 = least healthy, 5 = healthiest):",
+        [1, 2, 3, 4, 5],
+        index=4
+    )
+    submit = st.button("Log Food")
 
-# App title
-st.title("Nutrition Challenge Tracker")
+    if submit:
+        st.success(f"✅ {food_input} logged with a score of {score}!")
 
-# Daily food log
-st.header("Log Your Food")
-food_log = st.multiselect("Select the foods you've eaten today:", options=list(food_data.keys()))
+# Leaderboard Section
+st.markdown("## 🏆 Leaderboard")
+with st.container():
+    col1, col2, col3 = st.columns(3)
+    col1.metric("🎖️ User A", "150 pts")
+    col2.metric("🎖️ User B", "140 pts")
+    col3.metric("🎖️ User C", "130 pts")
 
-if st.button("Calculate Points"):
-    # Calculate daily points
-    daily_points = sum(food_data[food] for food in food_log)
-    st.success(f"Your total points for today: {daily_points}")
+# Progress Section
+st.markdown("## 📊 Your Progress")
+progress_value = 70  # Example progress percentage
+st.progress(progress_value)
+st.markdown(f"**You're {progress_value}% towards your weekly goal! 🎯**")
 
-    # Update a specific user's score for demonstration (e.g., Alice)
-    users["Alice"] += daily_points
-    st.write("Points have been added to Alice's total!")
+# Community Section
+st.markdown("## 🤝 Community")
+with st.expander("👥 Tips from the Community"):
+    st.write("💡 **Tip #1**: Add more whole foods like fruits and vegetables to increase your score!")
+    st.write("💡 **Tip #2**: Avoid processed snacks and sugary drinks.")
+    st.write("💡 **Tip #3**: Stay hydrated for better health!")
 
-# Leaderboard section
-st.header("Leaderboard")
-sorted_users = sorted(users.items(), key=lambda x: x[1], reverse=True)
-st.write("### Top Users:")
-for rank, (user, points) in enumerate(sorted_users, 1):
-    st.write(f"{rank}. {user}: {points} points")
-
-# Achievements section
-st.header("Achievements")
-st.write("### Unlocked Achievements for Alice:")
-alice_points = users["Alice"]
-unlocked_achievements = [
-    achievement for achievement, threshold in achievement_milestones.items()
-    if alice_points >= threshold
-]
-if unlocked_achievements:
-    for achievement in unlocked_achievements:
-        st.write(f"- {achievement}")
-else:
-    st.write("No achievements unlocked yet.")
-
-# Footer
-st.write("---")
-st.write("👨‍💻 Built with Streamlit to prototype your app.")
+# Footer Section
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center;'>"
+    "Created with ❤️ using Streamlit | "
+    "<a href='https://nutrition-challenge.streamlit.app/' target='_blank'>Visit App</a>"
+    "</div>",
+    unsafe_allow_html=True,
+)
